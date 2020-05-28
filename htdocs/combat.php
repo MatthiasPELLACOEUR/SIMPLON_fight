@@ -3,21 +3,41 @@
 $manager = new PersonnagesManager($db);
 
 // Si la session perso existe, on restaure l'objet.
-if (isset($_SESSION['perso'])) {
+if (isset($_SESSION['perso'])) 
+{
   $perso = $_SESSION['perso'];
 }
 
 // Si on a voulu créer un personnage.
-if (isset($_POST['creer']) && isset($_POST['nom'])) {
+if (isset($_POST['creer']) && isset($_POST['nom']) && isset($_POST['type'])) 
+{
   // On crée un nouveau personnage.
-  $perso = new Personnage(['nom' => $_POST['nom']]); 
+
+  if($_POST['type'] == "guerrier")
+  {
+    $perso = new Guerrier(['nom' => $_POST['nom'], 'type' => $_POST['type']]); 
+  }
+  if($_POST['type'] == "magicien")
+  {
+    $perso = new Guerrier(['nom' => $_POST['nom'], 'type' => $_POST['type']]); 
+  }
+  if($_POST['type'] == "archer")
+  {
+    $perso = new Guerrier(['nom' => $_POST['nom'], 'type' => $_POST['type']]); 
+  }
+  
+
+  // $perso = new Personnage(['nom' => $_POST['nom']]); 
+
   // Si le nom est invalide (string vide) on revoit une erreur
-  if (!$perso->nomValide()) {
+  if (!$perso->nomValide()) 
+  {
     $message = 'Le nom choisi est invalide.';
     unset($perso);
   }
   // Si le nom existe déjà
-  elseif ($manager->exists($perso->nom())) {
+  elseif ($manager->exists($perso->nom())) 
+  {
     $message = 'Le nom du personnage est déjà pris.';
     unset($perso);
   }
@@ -27,23 +47,29 @@ if (isset($_POST['creer']) && isset($_POST['nom'])) {
   }
 }
 // Si on a voulu utiliser un personnage.
-elseif (isset($_POST['utiliser']) && isset($_POST['nom'])) {
+elseif (isset($_POST['utiliser']) && isset($_POST['nom'])) 
+{
   // Si celui-ci existe.
-  if ($manager->exists($_POST['nom'])) {
+  if ($manager->exists($_POST['nom'])) 
+  {
     $perso = $manager->get($_POST['nom']);
   }
-  else {
+  else 
+  {
     $message = 'Ce personnage n\'existe pas !'; 
   }
 }
 // Si on a cliqué sur un personnage pour le frapper.
-elseif (isset($_GET['frapper'])) {
+elseif (isset($_GET['frapper'])) 
+{
   // S'il n'y a pas de personnage
-  if (!isset($perso)) {
+  if (!isset($perso)) 
+  {
     $message = 'Merci de créer un personnage ou de vous identifier.';
   }
   
-  else {
+  else 
+  {
     if (!$manager->exists((int) $_GET['frapper']))
     {
       $message = 'Le personnage que vous voulez frapper n\'existe pas !';
@@ -56,7 +82,8 @@ elseif (isset($_GET['frapper'])) {
       $retour = $perso->frapper($persoAFrapper); 
       // var_export($retour);
 
-      switch ($retour) {
+      switch ($retour) 
+      {
         case Personnage::CEST_MOI :
           $message = 'Mais... pourquoi voulez-vous vous frapper ???';
           break;
